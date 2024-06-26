@@ -1,6 +1,7 @@
 package com.hhplus.hhplus02.myapplication.domain.entities;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,33 +18,23 @@ import java.util.List;
 public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lectureId;
+    private Long lectureId; // 강의 ID
 
     @Column(nullable = false, name = "name")
-    private String name;
+    private String name; // 강의명
 
-    @Column(name = "max_number")
-    private int maxNumber;
+    @Column(name = "instructor_name")
+    private String instructorName; // 강사명
 
-    @Column(name = "apply_number")
-    private int applyNumber;
-
-    @Column(nullable = false, name = "lecuture_date_time")
-    private LocalDateTime lectureDateTime;
-
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "lecture_id")
-    private List<LectureApply> lectureApplyList = new ArrayList();
-
-    public void updateApplyNumber(){
-        this.applyNumber = this.applyNumber + 1;
+    @Builder
+    public Lecture(String name, String instructorName) {
+        this.name = name;
+        this.instructorName = instructorName;
     }
 
-    public Lecture(Long lectureId, String name, int maxNumber, int applyNumber, LocalDateTime lectureDateTime) {
-        this.lectureId = lectureId;
+    // 수정
+    public void update(String name, String instructorName){
         this.name = name;
-        this.maxNumber = maxNumber;
-        this.applyNumber = applyNumber;
-        this.lectureDateTime = lectureDateTime;
+        this.instructorName = instructorName;
     }
 }
