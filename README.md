@@ -20,7 +20,7 @@ API Specs
 * 강의 신청 완료 여부 조회 (GET /lectures/apply/check)
   + 특정 userId로 특정 강의 신청 완료 여부를 조회한다.
   + 신청 성공 시 true, 실패 시 false를 반환한다.
-* 강의 취소 (PUT /lectures/cancel)
+* 강의 취소 (PATCH /lectures/cancel)
   + 특정 userId로 이미 신청한 강의를 취소한다.
   + 신청한 내역이 없으면 실패한다.
   + 신청한 강의의 현재 신청인원이 0명이면 실패한다.
@@ -43,4 +43,5 @@ think-about
 * 객체지향 개발 방식으로 진행
 * 동시성 제어 -> 비관적 락 사용
 * 강의 별 관리하기 편하게 lecture - lecture_option 엔티티 고민 (확장 가능한 엔티티 구조)
-
+* 유닛/통합 테스트 가독성있게 작성
+* 통합 테스트를 편리하게 진행하기 위할 기존의 세팅 구현 -> Setting
