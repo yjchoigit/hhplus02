@@ -1,9 +1,12 @@
 package com.hhplus.hhplus02.myapplication.domain.entities;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,42 +14,66 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "lecture_history")
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
+@DynamicUpdate
+@Table(name = "lecture_history")
 public class LectureHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long lectureHistoryId; // 강의 신청 ID
+    @Comment("강의 신청 id")
+    private Long lectureHistoryId;
 
-    @Column(nullable = false, name = "lecture_id")
-    private Long lectureId; // 강의 ID
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lecture_id")
+    @Comment("강의 id")
+    private Lecture lecture;
 
     @Column(nullable = false, name = "lecture_option_id")
-    private Long lectureOptionId; // 강의 옵션 ID
+    @Comment("강의 옵션 id")
+    private Long lectureOptionId;
 
     @Column(nullable = false, name = "user_id")
-    private Long userId; // 회원 ID
+    @Comment("회원 id")
+    private Long userId;
 
     @CreatedDate
     @Column(nullable = false, name = "create_date_time", updatable = false)
-    private LocalDateTime createDateTime; // 강의 신청 등록일
+    @Comment("강의 신청 등록일")
+    private LocalDateTime createDateTime;
 
     @LastModifiedDate
     @Column(name = "update_date_time")
-    private LocalDateTime updateDateTime; // 강의 신청 수정일
+    @Comment("강의 신청 수정일")
+    private LocalDateTime updateDateTime;
 
     @Column(name = "cancel_date_time")
-    private LocalDateTime cancelDateTime; // 강의 신청 취소일
+    @Comment("강의 신청 취소일")
+    private LocalDateTime cancelDateTime;
+
+    @PrePersist
+    public void prePersist() {
+        this.updateDateTime = null;
+    }
 
     @Builder
-    public LectureHistory(Long lectureId, Long lectureOptionId,  Long userId) {
-        this.lectureId = lectureId;
+    public LectureHistory(Lecture lecture, Long lectureOptionId,  Long userId) {
+        this.lecture = lecture;
         this.lectureOptionId = lectureOptionId;
         this.userId = userId;
     }
-    
+
+    public LectureHistory(Long lectureHistoryId, Lecture lecture, Long lectureOptionId, Long userId, LocalDateTime createDateTime, LocalDateTime updateDateTime, LocalDateTime cancelDateTime) {
+        this.lectureHistoryId = lectureHistoryId;
+        this.lecture = lecture;
+        this.lectureOptionId = lectureOptionId;
+        this.userId = userId;
+        this.createDateTime = createDateTime;
+        this.updateDateTime = updateDateTime;
+        this.cancelDateTime = cancelDateTime;
+    }
+
     // 강의 신청 취소
     public void cancel(){
         this.cancelDateTime = LocalDateTime.now();
@@ -54,7 +81,7 @@ public class LectureHistory {
 
     // 강의 신청 여부 확인
     public boolean checkApplyComplete(){
-        return this.createDateTime != null && this.cancelDateTime == null;
+        return this.cancelDateTime == null;
     }
 
     // 강의 취소 여부 확인
