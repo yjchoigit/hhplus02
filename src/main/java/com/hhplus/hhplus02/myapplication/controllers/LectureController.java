@@ -1,6 +1,7 @@
 package com.hhplus.hhplus02.myapplication.controllers;
 
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureApplyApiReqDto;
+import com.hhplus.hhplus02.myapplication.controllers.dto.LectureCancelApiReqDto;
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureCreateApiReqDto;
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureListApiResDto;
 import com.hhplus.hhplus02.myapplication.domain.service.LectureService;
@@ -30,11 +31,9 @@ public class LectureController {
     }
 
     // 강의 취소
-    @PutMapping(value = "/lectures/cancel")
-    public void cancel(@RequestParam(name = "userId") Long userId,
-                       @RequestParam(name = "lectureId") Long lectureId,
-                       @RequestParam(name = "lectureOptionId") Long lectureOptionId) {
-        lectureService.cancel(userId, lectureId, lectureOptionId);
+    @PatchMapping(value = "/lectures/cancel")
+    public void cancel(@RequestBody LectureCancelApiReqDto reqDto) {
+        lectureService.cancel(reqDto);
     }
 
     // 강의 목록 조회
