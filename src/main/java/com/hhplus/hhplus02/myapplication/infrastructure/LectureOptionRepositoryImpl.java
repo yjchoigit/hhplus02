@@ -22,16 +22,17 @@ public class LectureOptionRepositoryImpl implements LectureOptionRepository {
 
     @Override
     public LectureOption findByLectureIdAndLectureOptionId(Long lectureId, Long lectureOptionId) {
-        return lectureOptionJpaRepository.findByLectureIdAndLectureOptionId(lectureId, lectureOptionId);
+        return lectureOptionJpaRepository.findByLecture_LectureIdAndLectureOptionId(lectureId, lectureOptionId);
     }
 
     @Override
     public List<LectureOption> findByLectureId(Long lectureId) {
-        return lectureOptionJpaRepository.findByLectureId(lectureId);
+        return lectureOptionJpaRepository.findByLecture_LectureId(lectureId);
     }
 
     @Override
     public void saveAll(List<LectureOption> optionList) {
         lectureOptionJpaRepository.saveAll(optionList);
     }
+
 }

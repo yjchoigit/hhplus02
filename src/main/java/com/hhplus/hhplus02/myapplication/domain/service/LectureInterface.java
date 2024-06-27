@@ -1,6 +1,7 @@
 package com.hhplus.hhplus02.myapplication.domain.service;
 
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureApplyApiReqDto;
+import com.hhplus.hhplus02.myapplication.controllers.dto.LectureCancelApiReqDto;
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureCreateApiReqDto;
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureListApiResDto;
 
@@ -14,7 +15,7 @@ public interface LectureInterface {
 
     List<LectureListApiResDto> list();
 
-    void cancel(Long userId, Long lectureId, Long lectureOptionId);
+    void cancel(LectureCancelApiReqDto reqDto);
 
     Long create(LectureCreateApiReqDto reqDto);
 }

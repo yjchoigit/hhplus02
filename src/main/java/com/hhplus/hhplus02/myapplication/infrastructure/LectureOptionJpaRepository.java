@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.Lock;
 import java.util.List;
 
 public interface LectureOptionJpaRepository extends JpaRepository<LectureOption, Long> {
-    List<LectureOption> findByLectureId(Long lectureId);
+    List<LectureOption> findByLecture_LectureId(Long lectureId);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    LectureOption findByLectureIdAndLectureOptionId(Long lectureId, Long lectureOptionId);
+    LectureOption findByLecture_LectureIdAndLectureOptionId(Long lectureId, Long lectureOptionId);
 }

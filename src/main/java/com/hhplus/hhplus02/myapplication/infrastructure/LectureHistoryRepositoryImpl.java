@@ -19,7 +19,7 @@ public class LectureHistoryRepositoryImpl implements LectureHistoryRepository {
 
     @Override
     public LectureHistory findByLectureIdAndLectureOptionIdAndUserId(Long lectureId, Long lectureOptionId, Long userId) {
-        return lectureHistoryJpaRepository.findFirstByLectureIdAndLectureOptionIdAndUserId(lectureId, lectureOptionId, userId);
+        return lectureHistoryJpaRepository.findFirstByLecture_LectureIdAndLectureOptionIdAndUserId(lectureId, lectureOptionId, userId);
     }
 
 }

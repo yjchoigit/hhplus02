@@ -1,6 +1,7 @@
 package com.hhplus.hhplus02.myapplication.domain.service;
 
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureApplyApiReqDto;
+import com.hhplus.hhplus02.myapplication.controllers.dto.LectureCancelApiReqDto;
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureCreateApiReqDto;
 import com.hhplus.hhplus02.myapplication.controllers.dto.LectureListApiResDto;
 import com.hhplus.hhplus02.myapplication.domain.entities.Lecture;
@@ -36,7 +37,7 @@ public class LectureService implements LectureInterface {
         LectureOption lectureOption = lectureOptionRepository.findByLectureIdAndLectureOptionId(lecture.getLectureId(), reqDto.lectureOptionId());
 
         // 강의 내역에 신청 내역이 들어있는지 확인
-        LectureHistory lectureHistory = lectureHistoryRepository.findByLectureIdAndLectureOptionIdAndUserId(reqDto.userId(), lecture.getLectureId(), lectureOption.getLectureOptionId());
+        LectureHistory lectureHistory = lectureHistoryRepository.findByLectureIdAndLectureOptionIdAndUserId(lecture.getLectureId(), lectureOption.getLectureOptionId(), reqDto.userId());
         if(lectureHistory != null && lectureHistory.checkApplyComplete()){
             throw new IllegalArgumentException("이미 신청된 강의입니다.");
         }
@@ -45,7 +46,7 @@ public class LectureService implements LectureInterface {
         lectureOption.increaseApplyNumber();
 
         // 강의 신청 내역 저장
-        lectureHistoryRepository.save(new LectureHistory(lecture.getLectureId(), reqDto.lectureOptionId(), reqDto.userId()));
+        lectureHistoryRepository.save(new LectureHistory(lecture, reqDto.lectureOptionId(), reqDto.userId()));
 
         return true;
     }
@@ -53,22 +54,22 @@ public class LectureService implements LectureInterface {
     @Override
     public boolean checkApply(Long userId, Long lectureId, Long lectureOptionId) {
         // 강의 내역에 신청 내역이 들어있는지 확인
-        LectureHistory lectureHistory = lectureHistoryRepository.findByLectureIdAndLectureOptionIdAndUserId(userId, lectureId, lectureOptionId);
+        LectureHistory lectureHistory = lectureHistoryRepository.findByLectureIdAndLectureOptionIdAndUserId(lectureId, lectureOptionId, userId);
         // 강의 신청 여부 확인
         return lectureHistory != null && lectureHistory.checkApplyComplete();
     }
 
     @Transactional(rollbackFor = {Exception.class})
     @Override
-    public void cancel(Long userId, Long lectureId, Long lectureOptionId) {
+    public void cancel(LectureCancelApiReqDto reqDto) {
         // 강의 조회
-        Lecture lecture = lectureRepository.findById(lectureId);
+        Lecture lecture = lectureRepository.findById(reqDto.lectureId());
 
         // 강의 옵션 조회
-        LectureOption lectureOption = lectureOptionRepository.findByLectureIdAndLectureOptionId(lecture.getLectureId(), lectureOptionId);
+        LectureOption lectureOption = lectureOptionRepository.findByLectureIdAndLectureOptionId(lecture.getLectureId(), reqDto.lectureOptionId());
 
         // 강의 내역에 신청 내역이 들어있는지 확인
-        LectureHistory lectureHistory = lectureHistoryRepository.findByLectureIdAndLectureOptionIdAndUserId(lectureId, lectureOptionId, userId);
+        LectureHistory lectureHistory = lectureHistoryRepository.findByLectureIdAndLectureOptionIdAndUserId(lecture.getLectureId(), reqDto.lectureOptionId(), reqDto.userId());
 
         // 강의 신청 내역이 없으면 실패
         if(lectureHistory == null){
@@ -108,7 +109,7 @@ public class LectureService implements LectureInterface {
 
         // 강의 옵션 등록
         List<LectureOption> optionList = reqDto.optionList().stream()
-                .map(m -> m.toEntity(lecture.getLectureId()))
+                .map(m -> m.toEntity(lecture))
                 .toList();
         lectureOptionRepository.saveAll(optionList);
 
