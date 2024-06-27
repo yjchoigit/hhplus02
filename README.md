@@ -12,7 +12,7 @@ Requirements
 
 API Specs
 ---------
-* 강의 신청 (GET /lectures/apply)
+* 강의 신청 (POST /lectures/apply)
   + 특정 userId로 선착순으로 제공되는 특강을 신청한다.
   + 강의 신청 성공 시 신청내역을 저장한다.
   + 최대 신청 인원보다 많이 신청할 경우 실패한다.
