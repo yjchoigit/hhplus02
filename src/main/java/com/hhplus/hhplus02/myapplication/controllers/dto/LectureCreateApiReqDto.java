@@ -1,5 +1,6 @@
 package com.hhplus.hhplus02.myapplication.controllers.dto;
 
+import com.hhplus.hhplus02.myapplication.domain.entities.Lecture;
 import com.hhplus.hhplus02.myapplication.domain.entities.LectureOption;
 
 import java.io.Serializable;
@@ -24,9 +25,9 @@ public record LectureCreateApiReqDto(
             LocalDateTime endDatetime
     ) implements Serializable{
 
-        public LectureOption toEntity(Long lectureId){
+        public LectureOption toEntity(Lecture lecture){
             return LectureOption.builder()
-                    .lectureId(lectureId)
+                    .lecture(lecture)
                     .maxNumber(maxNumber)
                     .startDatetime(startDatetime)
                     .endDatetime(endDatetime)
